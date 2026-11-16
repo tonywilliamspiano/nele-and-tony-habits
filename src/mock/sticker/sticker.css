@@ -1,0 +1,537 @@
+.sticker {
+  --ink: #2b2a33;
+  --red: #e5484d;
+  --paper: #f7f1e3;
+  --wobble: 255px 18px 225px 18px / 18px 225px 18px 255px;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: 20px 18px 88px;
+  color: var(--ink);
+  font: 19px/1.25 'Patrick Hand', cursive;
+  background-color: var(--paper);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(transparent 0 33px, rgb(120 160 210 / 0.18) 33px 34px);
+}
+
+.sticker *,
+.sticker *::before {
+  box-sizing: border-box;
+}
+
+.sticker button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sticker h1,
+.sticker h2,
+.sticker h3 {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+}
+
+.sticker .st-sub {
+  margin: 0;
+  font-size: 17px;
+  opacity: 0.7;
+}
+
+/* Header */
+.sticker .st-head {
+  margin-bottom: 18px;
+}
+.sticker .st-kicker {
+  margin: 0;
+  font-size: 18px;
+  opacity: 0.6;
+  transform: rotate(-2deg);
+  transform-origin: left;
+}
+.sticker .st-head h1 {
+  font-size: 46px;
+}
+.sticker .st-underline {
+  display: block;
+  width: 78%;
+  height: 12px;
+  margin-top: -2px;
+}
+.sticker .st-underline path {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+/* Sticker card: white die-cut edge + drop shadow, wobbly ink outline on ::before */
+.sticker .st-card {
+  position: relative;
+  border-radius: var(--wobble);
+  box-shadow:
+    0 0 0 6px #fff,
+    3px 8px 14px 4px rgb(60 40 10 / 0.22);
+}
+.sticker .st-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2.5px solid var(--ink);
+  border-radius: var(--wobble);
+  filter: url(#sticker-wobble);
+  pointer-events: none;
+}
+
+/* Nele */
+.sticker .st-nele {
+  padding: 14px 14px 10px;
+  margin: 0 4px 30px;
+  transform: rotate(-1.2deg);
+}
+.sticker .st-nele-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sticker .st-nele h2 {
+  font-size: 32px;
+}
+.sticker .st-avatar {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  font: 700 28px 'Caveat', cursive;
+  background: #ffe58a;
+  border: 2.5px solid var(--ink);
+  border-radius: 52% 48% 55% 45% / 47% 55% 45% 53%;
+  box-shadow: 0 0 0 4px #fff, 1px 3px 6px rgb(0 0 0 / 0.2);
+}
+.sticker .st-nele-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.sticker .st-mini {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px 6px;
+  background: rgb(255 255 255 / 0.7);
+  border: 2px dashed rgb(43 42 51 / 0.35);
+  border-radius: 14px 20px 12px 22px;
+  transition: transform 0.15s;
+}
+.sticker .st-mini:active {
+  transform: scale(0.94) rotate(-3deg);
+}
+.sticker .st-mini-emoji {
+  font-size: 30px;
+  line-height: 1.1;
+}
+.sticker .st-mini-name {
+  font-size: 15px;
+  line-height: 1.1;
+  text-align: center;
+}
+.sticker .st-mini-prog {
+  font-size: 15px;
+  opacity: 0.7;
+}
+.sticker .st-stamp {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font: 700 22px 'Caveat', cursive;
+  color: #fff;
+  background: var(--red);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #fff;
+  transform: rotate(12deg);
+  animation: st-pop 0.35s cubic-bezier(0.3, 1.8, 0.5, 1);
+}
+.sticker .st-hint {
+  margin: 8px 0 0;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.55;
+}
+
+/* My habits */
+.sticker .st-mine-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 6px 14px;
+}
+.sticker .st-mine-head h2 {
+  font-size: 34px;
+}
+.sticker .st-habit {
+  display: flex;
+  gap: 12px;
+  padding: 14px 14px 14px 12px;
+  margin: 0 4px 22px;
+}
+.sticker .st-habit:nth-of-type(odd) {
+  transform: rotate(0.8deg);
+}
+.sticker .st-habit:nth-of-type(even) {
+  transform: rotate(-0.7deg);
+}
+.sticker .st-emoji {
+  font-size: 40px;
+  line-height: 1;
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 0 0 #fff) drop-shadow(2px 2px 0 #fff) drop-shadow(-2px -2px 0 #fff) drop-shadow(1px 3px 3px rgb(0 0 0 / 0.25));
+}
+.sticker .st-body {
+  flex: 1;
+  min-width: 0;
+}
+.sticker .st-habit h3 {
+  font-size: 29px;
+}
+.sticker .st-habit.is-done h3 {
+  text-decoration: line-through wavy var(--red) 2px;
+  text-decoration-skip-ink: none;
+}
+.sticker .st-streak {
+  margin: 2px 0 8px;
+  font-size: 16px;
+  opacity: 0.75;
+}
+.sticker .st-ticks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sticker .st-count {
+  margin-left: 4px;
+  font-size: 18px;
+}
+.sticker .st-tick {
+  width: 44px;
+  height: 44px;
+  padding: 3px;
+  background: none;
+  border: 0;
+}
+.sticker .st-tick svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.sticker .st-tick .box {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+.sticker .st-tick .check {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  transition: stroke-dashoffset 0.25s ease-out;
+}
+.sticker .st-tick.is-on .check {
+  stroke-dashoffset: 0;
+}
+
+/* Calories */
+.sticker .st-meter {
+  height: 16px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 10px 4px 12px 5px / 5px 10px 4px 12px;
+  overflow: hidden;
+}
+.sticker .st-fill {
+  height: 100%;
+  background: repeating-linear-gradient(-50deg, #3aa86b 0 4px, transparent 4px 8px);
+  transition: width 0.25s;
+}
+.sticker .st-fill.is-over {
+  background: repeating-linear-gradient(-50deg, var(--red) 0 4px, transparent 4px 8px);
+}
+.sticker .st-step-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.sticker .st-step-row .st-count {
+  margin: 0;
+  text-align: center;
+  line-height: 1.1;
+}
+.sticker .st-step-row small {
+  display: block;
+  font-size: 14px;
+  opacity: 0.65;
+}
+.sticker .st-round {
+  flex: none;
+  width: 58px;
+  height: 44px;
+  font-size: 18px;
+  background: #fff;
+  border: 2.5px solid var(--ink);
+  border-radius: 50% 45% 52% 48% / 55% 48% 52% 45%;
+  box-shadow: 2px 3px 0 var(--ink);
+}
+.sticker .st-round:active {
+  transform: translate(2px, 3px);
+  box-shadow: none;
+}
+.sticker .st-round:disabled {
+  opacity: 0.35;
+}
+
+/* Add button */
+.sticker .st-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 8px);
+  margin: 6px 4px 0;
+  padding: 14px;
+  font-size: 21px;
+  background: rgb(255 255 255 / 0.4);
+  border: 2.5px dashed var(--ink);
+  border-radius: var(--wobble);
+  transform: rotate(-0.6deg);
+}
+.sticker .st-add span {
+  font-size: 26px;
+  color: var(--red);
+}
+
+/* Add sheet */
+.sticker .st-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(43 42 51 / 0.45);
+  animation: st-fade 0.2s;
+}
+.sticker .st-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding: 22px 20px 72px;
+  background: var(--paper);
+  border-top: 2.5px solid var(--ink);
+  border-radius: 28px 34px 0 0 / 22px 18px 0 0;
+  box-shadow: 0 -6px 0 #fff;
+  animation: st-slide 0.3s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+.sticker .st-sheet h2 {
+  font-size: 40px;
+  margin-bottom: 12px;
+  transform: rotate(-1.5deg);
+}
+.sticker .st-close {
+  position: absolute;
+  z-index: 1;
+  top: 14px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 50% 45% 52% 48%;
+}
+.sticker .st-field {
+  display: block;
+  margin-bottom: 14px;
+}
+.sticker .st-field > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 17px;
+  opacity: 0.7;
+}
+.sticker .st-field input {
+  width: 100%;
+  padding: 4px 2px;
+  font: inherit;
+  font-size: 22px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 2.5px solid var(--ink);
+  border-radius: 0 0 40% 20% / 0 0 4px 3px;
+  outline: none;
+}
+.sticker .st-field input:focus {
+  border-bottom-color: var(--red);
+}
+.sticker .st-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.sticker .st-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+.sticker .st-emoji-grid button {
+  aspect-ratio: 1;
+  font-size: 24px;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 40% 50% 45% 55%;
+}
+.sticker .st-emoji-grid button.is-on {
+  background: #fff;
+  border-color: var(--ink);
+  transform: rotate(-8deg) scale(1.12);
+  box-shadow: 1px 2px 0 var(--ink);
+}
+.sticker .st-chips {
+  display: flex;
+  gap: 10px;
+}
+.sticker .st-chip {
+  flex: 1;
+  padding: 8px;
+  font-size: 19px;
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 18px 8px 20px 10px / 10px 18px 8px 20px;
+}
+.sticker .st-chip.is-on {
+  background: #ffe58a;
+  box-shadow: 2px 3px 0 var(--ink);
+  transform: rotate(-1.5deg);
+}
+.sticker .st-primary {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  font: 700 28px 'Caveat', cursive;
+  color: #fff;
+  background: var(--red);
+  border: 2.5px solid var(--ink);
+  border-radius: var(--wobble);
+  box-shadow: 0 0 0 5px #fff, 3px 7px 0 5px var(--ink);
+}
+.sticker .st-primary:active {
+  transform: translateY(3px);
+}
+
+/* Celebration */
+.sticker .st-party {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgb(255 229 138 / 0.85);
+  animation: st-fade 0.3s;
+}
+.sticker .st-confetti {
+  position: absolute;
+  top: -50px;
+  font-size: 34px;
+  animation: st-fall linear infinite;
+}
+.sticker .st-party-card {
+  width: min(320px, 84vw);
+  padding: 22px 20px 26px;
+  text-align: center;
+  background: #fff;
+  animation: st-slap 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.sticker .st-party-avatars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.sticker .st-party-avatars .st-avatar {
+  width: 58px;
+  height: 58px;
+  font-size: 34px;
+  animation: st-bob 0.9s ease-in-out infinite alternate;
+}
+.sticker .st-party-avatars .st-avatar:last-child {
+  animation-delay: 0.45s;
+}
+.sticker .st-heart {
+  font-size: 30px;
+  animation: st-pop 0.8s ease-in-out infinite alternate;
+}
+.sticker .st-party-card h2 {
+  font-size: 64px;
+  color: var(--red);
+  transform: rotate(-3deg);
+}
+.sticker .st-party-card p {
+  margin: 8px 0 0;
+}
+.sticker .st-party-card .st-primary {
+  margin-top: 18px;
+}
+
+@keyframes st-pop {
+  from {
+    transform: scale(0.3) rotate(-20deg);
+  }
+}
+@keyframes st-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes st-slide {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes st-slap {
+  from {
+    transform: scale(2.2) rotate(14deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-4deg);
+  }
+}
+@keyframes st-bob {
+  to {
+    transform: translateY(-8px) rotate(6deg);
+  }
+}
+@keyframes st-fall {
+  to {
+    transform: translateY(115vh) rotate(540deg);
+  }
+}

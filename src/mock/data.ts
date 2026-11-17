@@ -45,3 +45,12 @@ export const nele: Person = {
 export function isDone(h: Pick<Habit, 'target'>, total: number): boolean {
   return total >= h.target
 }
+
+// Share of today's daily habits done, partial progress counted; weekly habits excluded.
+export function dayPercent(habits: Habit[], totals: Record<string, number>): number {
+  const daily = habits.filter((h) => h.period === 'day')
+  if (daily.length === 0) return 100
+  const share = daily.reduce((sum, h) => sum + Math.min((totals[h.id] ?? 0) / h.target, 1), 0) / daily.length
+  // Rounding alone would show 100% for e.g. 2490 of 2500 kcal, before the last flower blooms.
+  return Math.min(Math.round(share * 100), share < 1 ? 99 : 100)
+}

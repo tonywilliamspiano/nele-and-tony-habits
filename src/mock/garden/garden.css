@@ -229,6 +229,12 @@
   font: 26px/0.9 var(--sign);
 }
 
+.garden .gd-pct {
+  display: block;
+  font: 34px/0.85 var(--sign);
+  color: var(--moss);
+}
+
 .garden .gd-sprouts {
   display: flex;
   gap: 3px;
@@ -429,6 +435,16 @@
   box-shadow: inset 0 0 0 4px var(--wood), inset 0 0 0 6px var(--ink);
 }
 
+/* Five holes at full size would wrap on a 390px phone. */
+.garden .gd-bed.tight {
+  gap: 8px;
+}
+
+.garden .gd-bed.tight .gd-hole {
+  width: 56px;
+  height: 66px;
+}
+
 .garden button.gd-hole:active {
   transform: translateY(4px);
 }
@@ -556,6 +572,15 @@
 
 .garden .gd-mini.done .gd-mini-stat {
   background: var(--leaf);
+}
+
+/* Buttons reset their margins above, so the centring auto margins need the main selector. */
+.garden main .gd-out {
+  display: block;
+  margin: 20px auto 0;
+  padding: 12px;
+  color: var(--cream);
+  text-decoration: underline;
 }
 
 /* Harvest celebration */

@@ -1,0 +1,152 @@
+.login {
+  --ink: #3a2a22;
+  --soil: #7b4b2a;
+  --wood: #c88a48;
+  --cream: #f7eccb;
+  --leaf: #6cb24a;
+  --moss: #2f6b3a;
+  --sky: #9fd4e6;
+  --sun: #f4c542;
+  --berry: #d9534a;
+  --edge: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), 0 8px 0 0 var(--ink);
+  --edge-down: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink);
+  --frame: 0 -4px 0 0 var(--wood), 0 4px 0 0 var(--wood), -4px 0 0 0 var(--wood), 4px 0 0 0 var(--wood),
+    -4px -4px 0 0 var(--ink), 4px -4px 0 0 var(--ink), -4px 4px 0 0 var(--ink), 4px 4px 0 0 var(--ink),
+    0 -8px 0 0 var(--ink), 0 8px 0 0 var(--ink), -8px 0 0 0 var(--ink), 8px 0 0 0 var(--ink), 0 12px 0 0 var(--moss);
+
+  min-height: 100dvh;
+  color: var(--ink);
+  font: 20px/1.15 'Jersey 10', monospace;
+  background: var(--leaf)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Cg fill='%232f6b3a' fill-opacity='.45'%3E%3Crect x='4' y='6' width='2' height='4'/%3E%3Crect x='8' y='4' width='2' height='6'/%3E%3Crect x='12' y='6' width='2' height='4'/%3E%3Crect x='20' y='22' width='2' height='4'/%3E%3Crect x='24' y='20' width='2' height='6'/%3E%3C/g%3E%3C/svg%3E")
+    0 0 / 32px 32px;
+  -webkit-font-smoothing: none;
+}
+
+.login *,
+.login *::before,
+.login *::after {
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+.login .lg-sky {
+  position: relative;
+  padding-bottom: 40px;
+  background: var(--sky);
+  border-bottom: 12px solid var(--soil);
+  box-shadow: 0 4px 0 0 var(--ink);
+}
+
+.login .lg-sun {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  width: 20px;
+  height: 20px;
+  background: var(--sun);
+  box-shadow: 0 -8px 0 -4px var(--sun), 0 8px 0 -4px var(--sun), -8px 0 0 -4px var(--sun), 8px 0 0 -4px var(--sun);
+}
+
+.login .lg-hang {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-top: 64px;
+}
+
+.login .lg-hang::before,
+.login .lg-hang::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 68px;
+  background: var(--ink);
+}
+
+.login .lg-hang::before { left: calc(50% - 72px); }
+.login .lg-hang::after { right: calc(50% - 72px); }
+
+.login .lg-sign {
+  margin: 8px 24px;
+  padding: 10px 20px 12px;
+  text-align: center;
+  background: var(--wood);
+  box-shadow: var(--edge);
+}
+
+.login h1 {
+  margin: 0;
+  font: 52px/0.9 'Jersey 10', monospace;
+  font-weight: 400;
+  color: var(--cream);
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+.login .lg-sign p {
+  margin: 6px 0 0;
+  font-size: 24px;
+}
+
+.login .lg-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 44px 20px 0;
+  padding: 18px 16px 20px;
+  background: var(--cream);
+  box-shadow: var(--frame);
+}
+
+.login label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 22px;
+}
+
+.login input {
+  width: 100%;
+  min-height: 48px;
+  padding: 6px 10px 4px;
+  font: 26px/1 'Jersey 10', monospace;
+  color: var(--ink);
+  background: #fff;
+  border: 0;
+  box-shadow: inset 0 0 0 3px var(--ink);
+  outline: none;
+}
+
+.login input:focus {
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 6px var(--sun);
+}
+
+.login .lg-error {
+  margin: 0;
+  padding: 6px 8px 4px;
+  font-size: 20px;
+  background: #f6c9bf;
+  box-shadow: 0 0 0 3px var(--berry);
+}
+
+.login .lg-go {
+  min-height: 52px;
+  margin: 4px 4px 8px;
+  font: 30px/1 'Jersey 10', monospace;
+  color: var(--ink);
+  background: var(--sun);
+  border: 0;
+  box-shadow: var(--edge);
+  cursor: pointer;
+}
+
+.login .lg-go:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: var(--edge-down);
+}
+
+.login .lg-go:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

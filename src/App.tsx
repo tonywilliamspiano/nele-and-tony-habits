@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
+import Arcade from './mock/arcade'
+import Gameboy from './mock/gameboy'
+import Jrpg from './mock/jrpg'
 import Pastel from './mock/pastel'
 import Pixel from './mock/pixel'
 import Sticker from './mock/sticker'
 
-const variants = { pixel: Pixel, pastel: Pastel, sticker: Sticker }
+const variants = { pixel: Pixel, gameboy: Gameboy, jrpg: Jrpg, arcade: Arcade, pastel: Pastel, sticker: Sticker }
 type Variant = keyof typeof variants
 
 function fromHash(): Variant {
   const h = window.location.hash.slice(1)
-  return h in variants ? (h as Variant) : 'pixel'
+  return Object.hasOwn(variants, h) ? (h as Variant) : 'pixel'
 }
 
 export default function App() {

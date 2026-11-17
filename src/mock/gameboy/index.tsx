@@ -113,7 +113,7 @@ export default function Gameboy() {
 
             <div className="gb-hud">
               <Player face={TONY} tag="1P" name="TONY" done={doneCount(tony.habits, totals)} of={tony.habits.length} />
-              <span className="gb-vs">{cleared ? <Sprite rows={STAR} px={2} /> : 'VS'}</span>
+              <span className="gb-vs">{cleared ? <Sprite rows={STAR} px={2} /> : '&'}</span>
               <Player face={NELE} tag="2P" name="NELE" done={doneCount(nele.habits, totals)} of={nele.habits.length} />
             </div>
 

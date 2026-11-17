@@ -1,0 +1,706 @@
+.garden {
+  --ink: #3a2a22;
+  --soil: #7b4b2a;
+  --wood: #c88a48;
+  --cream: #f7eccb;
+  --leaf: #6cb24a;
+  --moss: #2f6b3a;
+  --sky: #9fd4e6;
+  --sun: #f4c542;
+  --berry: #d9534a;
+  --sign: 'Jersey 10', monospace;
+  /* Wooden plank frame: wood ring, ink outline with a stepped corner, moss ground shadow. Needs 8px margin. */
+  --frame: 0 -4px 0 0 var(--wood), 0 4px 0 0 var(--wood), -4px 0 0 0 var(--wood), 4px 0 0 0 var(--wood),
+    -4px -4px 0 0 var(--ink), 4px -4px 0 0 var(--ink), -4px 4px 0 0 var(--ink), 4px 4px 0 0 var(--ink),
+    0 -8px 0 0 var(--ink), 0 8px 0 0 var(--ink), -8px 0 0 0 var(--ink), 8px 0 0 0 var(--ink), 0 12px 0 0 var(--moss);
+  --edge: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), 0 8px 0 0 var(--ink);
+  --edge-down: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink);
+
+  min-height: 100dvh;
+  padding-bottom: 72px;
+  color: var(--ink);
+  font: 20px/1.15 'Jersey 10', monospace;
+  background: var(--leaf)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Cg fill='%232f6b3a' fill-opacity='.45'%3E%3Crect x='4' y='6' width='2' height='4'/%3E%3Crect x='8' y='4' width='2' height='6'/%3E%3Crect x='12' y='6' width='2' height='4'/%3E%3Crect x='20' y='22' width='2' height='4'/%3E%3Crect x='24' y='20' width='2' height='6'/%3E%3C/g%3E%3C/svg%3E")
+    0 0 / 32px 32px;
+  -webkit-font-smoothing: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.garden *,
+.garden *::before,
+.garden *::after {
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+.garden h1,
+.garden h2,
+.garden h3,
+.garden p {
+  margin: 0;
+  font-weight: 400;
+}
+
+.garden button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+.garden svg,
+.garden .gd-pe {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* Buttons */
+.garden .gd-btn {
+  min-height: 44px;
+  margin: 4px 4px 8px;
+  padding: 6px 12px;
+  font: 24px/1 var(--sign);
+  background: var(--cream);
+  box-shadow: var(--edge);
+  transition: transform 0.1s steps(1);
+}
+
+.garden .gd-btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: var(--edge-down);
+}
+
+.garden .gd-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.garden .gd-go {
+  display: block;
+  width: calc(100% - 8px);
+  min-height: 52px;
+  font-size: 28px;
+  background: var(--sun);
+}
+
+/* Header landscape */
+.garden .gd-land {
+  position: relative;
+  overflow: hidden;
+  background: var(--sky);
+}
+
+.garden .gd-sun {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  animation: gd-spin 4s steps(4) infinite;
+}
+
+@keyframes gd-spin {
+  50% { transform: scale(1.12); }
+}
+
+.garden .gd-cloud {
+  position: absolute;
+  left: -60px;
+  animation: gd-drift 40s steps(80) infinite;
+}
+
+.garden .gd-cloud.c1 { top: 22px; animation-delay: -6s; }
+.garden .gd-cloud.c2 { top: 64px; animation-delay: -26s; animation-duration: 55s; }
+
+@keyframes gd-drift {
+  to { transform: translateX(520px); }
+}
+
+.garden .gd-hang {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-top: 26px;
+}
+
+/* Two rope posts from the top edge. */
+.garden .gd-hang::before,
+.garden .gd-hang::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 30px;
+  background: var(--ink);
+}
+
+.garden .gd-hang::before { left: calc(50% - 64px); }
+.garden .gd-hang::after { right: calc(50% - 64px); }
+
+.garden .gd-sign {
+  position: relative;
+  margin: 8px;
+  padding: 6px 20px 8px;
+  text-align: center;
+  background: var(--wood);
+  box-shadow: var(--edge);
+}
+
+/* Plank seam */
+.garden .gd-sign::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  background: var(--soil);
+  opacity: 0.35;
+}
+
+.garden h1 {
+  position: relative;
+  z-index: 1;
+  font: 44px/0.9 var(--sign);
+  color: var(--cream);
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+.garden .gd-sign p {
+  position: relative;
+  z-index: 1;
+  margin-top: 2px;
+  font: 22px/1 var(--sign);
+}
+
+.garden .gd-hills {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.garden .gd-fence {
+  display: flex;
+  justify-content: center;
+  margin-top: -16px;
+  overflow: hidden;
+}
+
+.garden .gd-meadow {
+  padding: 2px 12px 18px;
+  background: var(--leaf);
+  border-bottom: 12px solid var(--soil);
+  box-shadow: 0 4px 0 0 var(--ink);
+}
+
+.garden .gd-farmers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.garden .gd-farmer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px;
+  padding: 6px 8px 6px 6px;
+  background: var(--cream);
+  box-shadow: var(--frame);
+}
+
+.garden .gd-farmer:last-child {
+  flex-direction: row-reverse;
+  padding: 6px 6px 6px 8px;
+  text-align: right;
+}
+
+.garden .gd-face {
+  padding: 4px 4px 0;
+  background: var(--sky);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.garden .gd-farmer b {
+  display: block;
+  font: 26px/0.9 var(--sign);
+}
+
+.garden .gd-sprouts {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.garden .gd-farmer:last-child .gd-sprouts {
+  justify-content: flex-end;
+}
+
+.garden .gd-post {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 58px;
+  padding: 4px 0 6px;
+  font: 17px/1 var(--sign);
+  background: var(--wood);
+  box-shadow: var(--edge);
+}
+
+.garden .gd-post b {
+  font: 38px/0.85 var(--sign);
+  color: var(--cream);
+  text-shadow: 3px 3px 0 var(--ink);
+}
+
+.garden .gd-post.lit {
+  background: var(--sun);
+  animation: gd-glow 1s steps(1) infinite;
+}
+
+@keyframes gd-glow {
+  50% { background: var(--wood); }
+}
+
+.garden .gd-replay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: calc(100% - 8px);
+  margin-top: 14px;
+  background: var(--sun);
+  animation: gd-bob 1s steps(2) infinite;
+}
+
+/* Sections */
+.garden main {
+  padding: 4px 12px 0;
+}
+
+.garden .gd-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0 8px;
+}
+
+.garden .gd-plank {
+  margin: 4px;
+  padding: 4px 12px 2px;
+  font: 28px/1 var(--sign);
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--ink);
+  background: var(--soil);
+  box-shadow: var(--edge);
+}
+
+.garden .gd-hint {
+  margin-right: 4px;
+  padding: 3px 6px;
+  font-size: 18px;
+  background: var(--cream);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+/* Plot cards */
+.garden .gd-frame {
+  margin: 8px 8px 24px;
+  background: var(--cream);
+  box-shadow: var(--frame);
+}
+
+.garden .gd-card {
+  padding: 10px 10px 0;
+  overflow: hidden;
+}
+
+.garden .gd-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.garden .gd-tile {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  background: var(--sky);
+  box-shadow: inset 0 0 0 3px var(--ink);
+}
+
+.garden .gd-card.done .gd-tile {
+  background: var(--sun);
+}
+
+.garden .gd-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.garden h3 {
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.garden .gd-title p {
+  margin-top: 2px;
+  font-size: 18px;
+  color: var(--soil);
+}
+
+.garden .gd-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px 0;
+  font: 18px/1 var(--sign);
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--leaf);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+/* Streak: a little wooden stake */
+.garden .gd-stake {
+  position: relative;
+  flex: none;
+  width: 46px;
+  margin-bottom: 10px;
+  padding: 3px 0 2px;
+  text-align: center;
+  font: 16px/1 var(--sign);
+  background: var(--wood);
+  box-shadow: 0 0 0 3px var(--ink);
+  opacity: 0.5;
+}
+
+.garden .gd-stake::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  bottom: -12px;
+  width: 8px;
+  height: 9px;
+  background: var(--wood);
+  box-shadow: -3px 0 0 0 var(--ink), 3px 0 0 0 var(--ink), 0 3px 0 0 var(--ink);
+}
+
+.garden .gd-stake b {
+  display: block;
+  font: 28px/0.85 var(--sign);
+}
+
+.garden .gd-stake.lit {
+  opacity: 1;
+  background: var(--sun);
+}
+
+.garden .gd-stake.lit::after {
+  background: var(--sun);
+}
+
+/* Soil bed under each card */
+.garden .gd-bed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 10px -10px 0;
+  padding: 12px;
+  background: var(--soil)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='16' shape-rendering='crispEdges'%3E%3Cg fill='%233a2a22' fill-opacity='.4'%3E%3Crect x='0' y='12' width='24' height='4'/%3E%3Crect x='6' y='4' width='2' height='2'/%3E%3Crect x='18' y='6' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E")
+    0 0 / 24px 16px;
+  box-shadow: inset 0 4px 0 0 var(--ink);
+}
+
+.garden .gd-hole {
+  display: grid;
+  place-items: end center;
+  width: 72px;
+  height: 84px;
+  padding-bottom: 4px;
+  background: var(--soil);
+  box-shadow: inset 0 0 0 4px var(--wood), inset 0 0 0 6px var(--ink);
+}
+
+.garden button.gd-hole:active {
+  transform: translateY(4px);
+}
+
+.garden .gd-hole.on svg {
+  animation: gd-grow 0.4s steps(3);
+  transform-origin: bottom;
+}
+
+@keyframes gd-grow {
+  0% { transform: scaleY(0.4); }
+  60% { transform: scaleY(1.15); }
+}
+
+.garden .gd-water {
+  flex: 1;
+  min-width: 90px;
+  font-size: 18px;
+  color: var(--cream);
+}
+
+.garden .gd-counter {
+  width: 100%;
+}
+
+.garden .gd-counter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.garden .gd-counter-row .gd-btn {
+  flex: none;
+  width: 68px;
+  min-height: 48px;
+  padding: 0;
+  font-size: 24px;
+}
+
+.garden .gd-hole.big {
+  flex: none;
+  width: 68px;
+}
+
+.garden .gd-readout {
+  flex: 1;
+  text-align: center;
+  color: var(--cream);
+}
+
+.garden .gd-readout b {
+  display: block;
+  font: 36px/0.9 var(--sign);
+  text-shadow: 3px 3px 0 var(--ink);
+}
+
+.garden .gd-readout span {
+  font-size: 18px;
+}
+
+.garden .gd-rows {
+  display: flex;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 4px;
+  background: var(--ink);
+}
+
+.garden .gd-rows i {
+  flex: 1;
+  height: 12px;
+  background: var(--soil);
+}
+
+.garden .gd-rows i.on {
+  background: var(--leaf);
+}
+
+/* Nele's patch */
+.garden .gd-patch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 8px;
+}
+
+.garden .gd-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+}
+
+.garden .gd-mini:active {
+  transform: translateY(4px);
+}
+
+.garden .gd-mini-bed {
+  display: grid;
+  place-items: end center;
+  height: 68px;
+  padding-bottom: 2px;
+  background: var(--soil);
+  box-shadow: inset 0 0 0 3px var(--ink);
+}
+
+.garden .gd-mini-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 58px;
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.garden .gd-mini-stat {
+  margin-top: 4px;
+  padding: 3px 0 1px;
+  font: 20px/1 var(--sign);
+  background: var(--sky);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.garden .gd-mini.done .gd-mini-stat {
+  background: var(--leaf);
+}
+
+/* Harvest celebration */
+.garden .gd-party {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: 390px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-align: center;
+  background: var(--sky);
+  animation: gd-in 0.4s steps(4);
+}
+
+@keyframes gd-in {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.garden .gd-sun.big {
+  top: 28px;
+  right: 28px;
+}
+
+.garden .gd-party-sky {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 48px;
+  width: 100%;
+  padding: 40px 0 12px;
+}
+
+.garden .gd-party-sign {
+  padding: 10px 22px 12px;
+  animation: gd-bob 1.2s steps(2) infinite;
+}
+
+.garden .gd-party-sign h2 {
+  position: relative;
+  z-index: 1;
+  font: 60px/0.9 var(--sign);
+  color: var(--cream);
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+.garden .gd-party-sign p {
+  position: relative;
+  z-index: 1;
+  font: 24px/1 var(--sign);
+}
+
+.garden .gd-duo {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.garden .gd-hop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font: 28px/1 var(--sign);
+  animation: gd-hop 0.7s steps(2) infinite;
+}
+
+.garden .gd-hop span {
+  padding: 2px 8px 0;
+  background: var(--cream);
+  box-shadow: 0 0 0 3px var(--ink);
+}
+
+.garden .gd-hop.late {
+  animation-delay: -0.35s;
+}
+
+.garden .gd-hop .gd-face {
+  padding: 7px 7px 0;
+  box-shadow: inset 0 0 0 4px var(--ink);
+  background: var(--cream);
+}
+
+@keyframes gd-hop {
+  50% { transform: translateY(-14px); }
+}
+
+.garden .gd-basket {
+  position: relative;
+  z-index: 2;
+  animation: gd-bob 1s steps(2) infinite;
+}
+
+@keyframes gd-bob {
+  50% { transform: translateY(-4px); }
+}
+
+.garden .gd-party > .gd-fence {
+  width: 100%;
+  margin: 0;
+  background: var(--sky);
+}
+
+.garden .gd-crop {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  padding-top: 8px;
+  background: var(--soil);
+  box-shadow: inset 0 4px 0 0 var(--ink);
+}
+
+.garden .gd-party-ground {
+  width: 100%;
+  position: relative;
+  z-index: 3;
+  padding: 20px 24px 72px;
+  background: var(--leaf);
+  box-shadow: 0 -4px 0 0 var(--ink);
+}
+
+.garden .gd-party-ground p {
+  margin-bottom: 16px;
+  padding: 6px 8px;
+  font-size: 19px;
+  background: var(--cream);
+  box-shadow: 0 0 0 3px var(--ink);
+}
+
+.garden .gd-fall {
+  position: absolute;
+  top: -20px;
+  animation: gd-fall 4s steps(20) infinite;
+}
+
+@keyframes gd-fall {
+  25% { transform: translate(8px, 26dvh); }
+  50% { transform: translate(-4px, 52dvh); }
+  75% { transform: translate(8px, 78dvh); }
+  to { transform: translate(0, 105dvh); }
+}

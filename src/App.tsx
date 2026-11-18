@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './lib/supabase'
 import Login from './Login'
-import Garden from './mock/garden'
+import Garden from './garden'
 
 type Me = 'tony' | 'nele'
 
@@ -38,7 +38,7 @@ export default function App() {
       {session === undefined ? (
         <div className="login" />
       ) : me ? (
-        <Garden me={me} signOut={() => supabase.auth.signOut()} />
+        <Garden me={session!.user.id} signOut={() => supabase.auth.signOut()} />
       ) : (
         <Login notice={notice} />
       )}

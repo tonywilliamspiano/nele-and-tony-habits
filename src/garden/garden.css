@@ -237,7 +237,10 @@
 
 .garden .gd-sprouts {
   display: flex;
+  flex-wrap: wrap;
   gap: 3px;
+  /* Four icons a row, so a long habit list cannot push the other farmer off screen. */
+  max-width: 93px;
   margin-top: 4px;
 }
 
@@ -311,6 +314,34 @@
   font-size: 18px;
   background: var(--cream);
   box-shadow: 0 0 0 2px var(--ink);
+}
+
+.garden .gd-busy {
+  min-height: 44px;
+  margin-right: 4px;
+  padding: 3px 10px;
+  font-size: 20px;
+  background: var(--cream);
+  box-shadow: var(--edge-down);
+}
+
+.garden .gd-busy.on {
+  background: var(--sun);
+}
+
+.garden .gd-error {
+  margin: 12px 4px 0;
+  padding: 6px 10px;
+  color: var(--cream);
+  background: var(--berry);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.garden .gd-rest {
+  margin: 14px 4px 0;
+  color: var(--cream);
+  text-align: center;
+  text-shadow: 2px 2px 0 var(--ink);
 }
 
 /* Plot cards */
@@ -538,10 +569,6 @@
   text-align: center;
 }
 
-.garden .gd-mini:active {
-  transform: translateY(4px);
-}
-
 .garden .gd-mini-bed {
   display: grid;
   place-items: end center;
@@ -557,13 +584,13 @@
   align-items: center;
   gap: 2px;
   min-height: 58px;
-  margin-top: 6px;
+  margin: 6px 0 4px;
   font-size: 18px;
   line-height: 1.1;
 }
 
 .garden .gd-mini-stat {
-  margin-top: 4px;
+  margin-top: auto;
   padding: 3px 0 1px;
   font: 20px/1 var(--sign);
   background: var(--sky);
@@ -572,6 +599,17 @@
 
 .garden .gd-mini.done .gd-mini-stat {
   background: var(--leaf);
+}
+
+.garden .gd-badge.tight,
+.garden .gd-mini.tight .gd-mini-stat {
+  background: var(--sun);
+}
+
+.garden .gd-badge.behind,
+.garden .gd-mini.behind .gd-mini-stat {
+  color: var(--cream);
+  background: var(--berry);
 }
 
 /* Buttons reset their margins above, so the centring auto margins need the main selector. */

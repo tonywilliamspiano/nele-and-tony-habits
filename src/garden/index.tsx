@@ -1,6 +1,22 @@
 import '@fontsource/jersey-10/400.css'
 import { useEffect, useRef, useState } from 'react'
-import { type Habit, type Person, dayPercent, isDone, nele, today, tony } from '../data'
+import {
+  type Day,
+  type Habit,
+  type Log,
+  type Pace,
+  dayCleared,
+  dayPercent,
+  dayPlan,
+  daysLeftInWeek,
+  habitStreak,
+  isBusy,
+  teamStreak,
+  totalOn,
+  weekPace,
+  weekTotal,
+} from '../lib/days'
+import { type Person, useGarden } from '../lib/useGarden'
 import './garden.css'
 
 const C = {
@@ -30,9 +46,6 @@ const PETALS = [
   ['#f08a3a', C.ink],
 ]
 const bloom = (i: number) => ({ ...PLANT, y: PETALS[i % PETALS.length][0], d: PETALS[i % PETALS.length][1] })
-const flowerOf: Record<string, Record<string, string>> = Object.fromEntries(
-  [tony, nele].flatMap((p) => p.habits.map((h, i) => [h.id, bloom(i)])),
-)
 
 const MOUND = ['...kkkkkkkk...', '..kkkkkkkkkk..']
 const E = '..............'
@@ -164,37 +177,71 @@ function PixelEmoji({ char, grid }: { char: string; grid: number }) {
   return <canvas ref={ref} className="gd-pe" width={grid} height={grid} style={{ width: grid * 2, height: grid * 2 }} aria-hidden />
 }
 
-const TEAM_STREAK = 5
+// Weekly habits open with their first full week. Dead after that Monday: delete it and its uses.
+const WEEKLY_OPENS: Day = '2026-11-23'
 
-const everything = [...tony.habits, ...nele.habits]
-const seed = Object.fromEntries(everything.map((h) => [h.id, h.total]))
-const daily = (habits: Habit[]) => habits.filter((h) => h.period === 'day')
-const weekly = (habits: Habit[]) => habits.filter((h) => h.period === 'week')
-// Weekly habits have their own bed and never hold up the day.
-const all = daily(everything)
-const allDone = (t: Record<string, number>) => all.every((h) => isDone(h, t[h.id]))
+type Plot = Habit & { flower: Record<string, string> }
+
 // More taps than this and the habit gets +/- buttons instead of one hole per tap.
 const usesCounter = (h: Habit) => h.target / h.step > 5
+const isDone = (h: Habit, total: number) => total >= h.target
 
-// Seed streaks already include today when the seed total is done.
-const streakOf = (h: Habit, total: number) => h.streak - (isDone(h, h.total) ? 1 : 0) + (isDone(h, total) ? 1 : 0)
+const PACE_LABEL: Record<Pace, string> = { 'on-track': 'ON TRACK', tight: 'EVERY DAY NOW', behind: 'BEHIND' }
 
 function stageOf(h: Habit, total: number) {
   return isDone(h, total) ? BLOOM : total === 0 ? SEED : total / h.target < 0.5 ? SPROUT : LEAFY
 }
 
-export default function Garden({ me, signOut }: { me: 'tony' | 'nele'; signOut: () => void }) {
-  const [mine, theirs] = me === 'tony' ? [tony, nele] : [nele, tony]
-  const [totals, setTotals] = useState(seed)
+export default function Garden({ me, signOut }: { me: string; signOut: () => void }) {
+  const { garden, error, setTotal, setBusy } = useGarden(me)
   const [party, setParty] = useState(false)
+  const cleared = !!garden && garden.people.every((p) => dayCleared(garden.log, garden.habits.filter((h) => h.owner_id === p.id), p.id, garden.day))
 
-  function set(id: string, value: number) {
-    const next = { ...totals, [id]: Math.max(0, value) }
-    setTotals(next)
-    if (!allDone(totals) && allDone(next)) setParty(true)
+  // The celebration shows once per day per phone, the first time it sees both days cleared.
+  useEffect(() => {
+    if (!garden || !cleared || localStorage.getItem('harvest-seen') === garden.day) return
+    localStorage.setItem('harvest-seen', garden.day)
+    setParty(true)
+  }, [cleared, garden])
+
+  if (!garden) {
+    return (
+      <div className="garden">
+        <main>{error && <p className="gd-error">{error}</p>}</main>
+      </div>
+    )
   }
 
-  const cleared = allDone(totals)
+  const { day, log, people } = garden
+  const mine = people.find((p) => p.id === me)
+  const theirs = people.find((p) => p.id !== me)
+  if (!mine || !theirs) return <div className="garden" />
+
+  const plotsOf = (p: Person): Plot[] => garden.habits.filter((h) => h.owner_id === p.id).map((h, i) => ({ ...h, flower: bloom(i) }))
+  const myPlots = plotsOf(mine)
+  const theirPlots = plotsOf(theirs)
+  const busy = isBusy(log, me, day)
+  const myDay = dayPlan(myPlots, busy)
+  const theirDay = dayPlan(theirPlots, isBusy(log, theirs.id, day))
+  const resting = myPlots.filter((h) => h.period === 'day').length - myDay.length
+  const weeklyOpen = day >= WEEKLY_OPENS
+  const weekly = (plots: Plot[]) => (weeklyOpen ? plots.filter((h) => h.period === 'week') : [])
+  const team = teamStreak(log, garden.habits, people.map((p) => p.id), day)
+
+  const totalOf = (h: Habit) => (h.period === 'week' ? weekTotal(log, h.id, day) : totalOn(log, h.id, day))
+  const paceOf = (h: Habit) => (h.period === 'week' && !isDone(h, totalOf(h)) ? weekPace(h.target, totalOf(h), day) : null)
+  const card = (h: Plot) => (
+    <PlotCard
+      key={h.id}
+      habit={h}
+      total={totalOf(h)}
+      streak={habitStreak(log, h, day)}
+      pace={paceOf(h)}
+      daysLeft={daysLeftInWeek(day)}
+      set={(v) => setTotal(h, totalOf(h), v)}
+    />
+  )
+  const date = new Date(`${day}T12:00:00`)
 
   return (
     <div className="garden">
@@ -211,8 +258,8 @@ export default function Garden({ me, signOut }: { me: 'tony' | 'nele'; signOut: 
 
         <div className="gd-hang">
           <div className="gd-sign">
-            <h1>{today.toLocaleDateString('en-GB', { weekday: 'long' })}</h1>
-            <p>{today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <h1>{date.toLocaleDateString('en-GB', { weekday: 'long' })}</h1>
+            <p>{date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
           </div>
         </div>
 
@@ -227,13 +274,14 @@ export default function Garden({ me, signOut }: { me: 'tony' | 'nele'; signOut: 
 
         <div className="gd-meadow">
           <div className="gd-farmers">
-            <Farmer person={mine} totals={totals} />
+            <Farmer person={mine} plan={myDay} log={log} day={day} />
             <div className={`gd-post ${cleared ? 'lit' : ''}`} title="days in a row you both finished everything">
               <span>TEAM</span>
-              <b>{TEAM_STREAK + (cleared ? 1 : 0)}</b>
-              <span>days</span>
+              <span>STREAK</span>
+              <b>{team}</b>
+              <span>{team === 1 ? 'day' : 'days'}</span>
             </div>
-            <Farmer person={theirs} totals={totals} />
+            <Farmer person={theirs} plan={theirDay} log={log} day={day} />
           </div>
 
           {cleared && (
@@ -245,30 +293,34 @@ export default function Garden({ me, signOut }: { me: 'tony' | 'nele'; signOut: 
       </header>
 
       <main>
+        {error && <p className="gd-error">{error}</p>}
         <div className="gd-section">
           <h2 className="gd-plank">{mine.name}'s plots</h2>
+          <button className={`gd-busy ${busy ? 'on' : ''}`} aria-pressed={busy} onClick={() => setBusy(!busy)}>
+            busy day
+          </button>
         </div>
-        {daily(mine.habits).map((h) => (
-          <PlotCard key={h.id} habit={h} total={totals[h.id]} set={(v) => set(h.id, v)} />
-        ))}
+        {myDay.map(card)}
+        {resting > 0 && (
+          <p className="gd-rest">
+            busy day · {resting} {resting === 1 ? 'plot rests' : 'plots rest'} today
+          </p>
+        )}
 
-        {weekly(mine.habits).length > 0 && (
+        {myPlots.some((h) => h.period === 'week') && (
           <div className="gd-section">
             <h2 className="gd-plank">This week</h2>
-            <span className="gd-hint">fresh soil on Monday</span>
+            <span className="gd-hint">{weeklyOpen ? 'fresh soil on Monday' : 'opens on Monday'}</span>
           </div>
         )}
-        {weekly(mine.habits).map((h) => (
-          <PlotCard key={h.id} habit={h} total={totals[h.id]} set={(v) => set(h.id, v)} />
-        ))}
+        {weekly(myPlots).map(card)}
 
         <div className="gd-section">
           <h2 className="gd-plank">{theirs.name}'s patch</h2>
-          <span className="gd-hint">demo: tap to log for {theirs.name}</span>
         </div>
         <div className="gd-frame gd-patch">
-          {[...daily(theirs.habits), ...weekly(theirs.habits)].map((h) => (
-            <MiniPlot key={h.id} habit={h} total={totals[h.id]} tap={() => set(h.id, nextTap(h, totals[h.id]))} />
+          {[...theirDay, ...weekly(theirPlots)].map((h) => (
+            <MiniPlot key={h.id} habit={h} total={totalOf(h)} pace={paceOf(h)} />
           ))}
         </div>
 
@@ -277,17 +329,13 @@ export default function Garden({ me, signOut }: { me: 'tony' | 'nele'; signOut: 
         </button>
       </main>
 
-      {party && <Harvest close={() => setParty(false)} />}
+      {party && <Harvest count={myDay.length + theirDay.length} streak={team} close={() => setParty(false)} />}
     </div>
   )
 }
 
-function nextTap(h: Habit, total: number) {
-  return total >= h.target ? 0 : total + h.step
-}
-
-function Farmer({ person, totals }: { person: Person; totals: Record<string, number> }) {
-  const { face, colors } = FACES[person.id]
+function Farmer({ person, plan, log, day }: { person: Person; plan: Plot[]; log: Log; day: Day }) {
+  const { face, colors } = FACES[person.name.toLowerCase()] ?? FACES.tony
   return (
     <div className="gd-farmer">
       <div className="gd-face">
@@ -295,10 +343,10 @@ function Farmer({ person, totals }: { person: Person; totals: Record<string, num
       </div>
       <div>
         <b>{person.name}</b>
-        <span className="gd-pct">{dayPercent(person.habits, totals)}%</span>
+        <span className="gd-pct">{dayPercent(plan, log, day)}%</span>
         <div className="gd-sprouts">
-          {daily(person.habits).map((h) => (
-            <Sprite key={h.id} rows={isDone(h, totals[h.id]) ? FLOWER_ICON : SEED_ICON} colors={flowerOf[h.id]} px={3} />
+          {plan.map((h) => (
+            <Sprite key={h.id} rows={isDone(h, totalOn(log, h.id, day)) ? FLOWER_ICON : SEED_ICON} colors={h.flower} px={3} />
           ))}
         </div>
       </div>
@@ -315,7 +363,9 @@ function Stake({ n, lit, unit }: { n: number; lit: boolean; unit: string }) {
   )
 }
 
-function PlotCard({ habit: h, total, set }: { habit: Habit; total: number; set: (v: number) => void }) {
+type CardProps = { habit: Plot; total: number; streak: number; pace: Pace | null; daysLeft: number; set: (v: number) => void }
+
+function PlotCard({ habit: h, total, streak, pace, daysLeft, set }: CardProps) {
   const done = isDone(h, total)
   const ticks = !usesCounter(h)
   const when = h.period === 'week' ? 'this week' : 'today'
@@ -330,9 +380,10 @@ function PlotCard({ habit: h, total, set }: { habit: Habit; total: number; set: 
           <p>
             {ticks ? `${total} of ${h.target} ${when}` : `at least ${h.target} ${h.unit}`}
             {done && <b className="gd-badge">IN BLOOM</b>}
+            {pace && <b className={`gd-badge ${pace}`}>{PACE_LABEL[pace]}</b>}
           </p>
         </div>
-        <Stake n={streakOf(h, total)} lit={done} unit={h.period} />
+        <Stake n={streak} lit={done} unit={h.period} />
       </div>
 
       <div className={`gd-bed ${h.target > 4 ? 'tight' : ''}`}>
@@ -344,19 +395,27 @@ function PlotCard({ habit: h, total, set }: { habit: Habit; total: number; set: 
               aria-label={`log ${i + 1}`}
               onClick={() => set(i < total ? i : i + 1)}
             >
-              <Sprite rows={done ? BLOOM : i < total ? LEAFY : SEED} colors={flowerOf[h.id]} px={h.target > 4 ? 3 : 4} />
+              <Sprite rows={done ? BLOOM : i < total ? LEAFY : SEED} colors={h.flower} px={h.target > 4 ? 3 : 4} />
             </button>
           ))
         ) : (
           <Counter habit={h} total={total} set={set} />
         )}
-        {ticks && <span className="gd-water">{done ? `watered for ${when}` : 'tap a plot to water it'}</span>}
+        {ticks && (
+          <span className="gd-water">
+            {done
+              ? `watered for ${when}`
+              : pace
+                ? `${h.target - total} to go · ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`
+                : 'tap a plot to water it'}
+          </span>
+        )}
       </div>
     </section>
   )
 }
 
-function Counter({ habit: h, total, set }: { habit: Habit; total: number; set: (v: number) => void }) {
+function Counter({ habit: h, total, set }: { habit: Plot; total: number; set: (v: number) => void }) {
   const segs = 11
   const filled = Math.min(segs, Math.ceil((total / h.target) * segs))
   const extra = total - h.target
@@ -367,7 +426,7 @@ function Counter({ habit: h, total, set }: { habit: Habit; total: number; set: (
           -{h.step}
         </button>
         <div className="gd-hole big">
-          <Sprite rows={stageOf(h, total)} colors={flowerOf[h.id]} px={4} />
+          <Sprite rows={stageOf(h, total)} colors={h.flower} px={4} />
         </div>
         <div className="gd-readout">
           <b>{total}</b>
@@ -386,21 +445,21 @@ function Counter({ habit: h, total, set }: { habit: Habit; total: number; set: (
   )
 }
 
-function MiniPlot({ habit: h, total, tap }: { habit: Habit; total: number; tap: () => void }) {
+function MiniPlot({ habit: h, total, pace }: { habit: Plot; total: number; pace: Pace | null }) {
   const done = isDone(h, total)
   const stat = done ? 'in bloom' : `${total}/${h.target}`
   const week = h.period === 'week'
   return (
-    <button className={`gd-mini ${done ? 'done' : ''} ${week ? 'week' : ''}`} onClick={tap}>
+    <div className={`gd-mini ${done ? 'done' : ''} ${pace ?? ''}`}>
       <span className="gd-mini-bed">
-        <Sprite rows={stageOf(h, total)} colors={flowerOf[h.id]} px={3} />
+        <Sprite rows={stageOf(h, total)} colors={h.flower} px={3} />
       </span>
       <span className="gd-mini-name">
         <PixelEmoji char={h.emoji} grid={10} />
         {h.name}
       </span>
       <span className="gd-mini-stat">{week ? (done ? 'week done' : `${stat} wk`) : stat}</span>
-    </button>
+    </div>
   )
 }
 
@@ -411,7 +470,7 @@ const FALLING = Array.from({ length: 22 }, (_, i) => ({
   tomato: i % 3 === 0,
 }))
 
-function Harvest({ close }: { close: () => void }) {
+function Harvest({ count, streak, close }: { count: number; streak: number; close: () => void }) {
   return (
     <div className="gd-party" onClick={close}>
       {FALLING.map((f, i) => (
@@ -424,8 +483,8 @@ function Harvest({ close }: { close: () => void }) {
       </div>
       <div className="gd-party-sky">
         <div className="gd-sign gd-party-sign">
-          <h2>Harvest day!</h2>
-          <p>Everything is in bloom</p>
+          <h2>We did it!</h2>
+          <p>The flowers are growing, let's celebrate the day.</p>
         </div>
         <div className="gd-duo">
           <div className="gd-hop">
@@ -456,7 +515,7 @@ function Harvest({ close }: { close: () => void }) {
         ))}
       </div>
       <div className="gd-party-ground">
-        <p>All {all.length} habits done · team streak {TEAM_STREAK + 1} days</p>
+        <p>All {count} habits done · team streak {streak} {streak === 1 ? 'day' : 'days'}</p>
         <button className="gd-btn gd-go" onClick={close}>
           Back to the garden
         </button>

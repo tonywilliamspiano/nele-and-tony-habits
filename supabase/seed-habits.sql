@@ -4,7 +4,6 @@ insert into public.habits (owner_id, position, name, emoji, direction, target, b
 select p.id, h.position, h.name, h.emoji, 'at_least', h.target, h.busy_target, h.period, h.step, h.unit
 from public.profiles p
 join (values
-    ('Tony',  1, 'Glass of water',                '💧', 1,    1,             'day',  1,   null),
     ('Tony',  2, 'Brush teeth',                   '🪥', 1,    1,             'day',  1,   null),
     ('Tony',  3, 'Creatine',                      '🥄', 1,    1,             'day',  1,   null),
     ('Tony',  4, 'Vitamins',                      '💊', 1,    1,             'day',  1,   null),

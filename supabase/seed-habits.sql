@@ -8,7 +8,7 @@ join (values
     ('Tony',  3, 'Creatine',                      '🥄', 1,    1,             'day',  1,   null),
     ('Tony',  4, 'Vitamins',                      '💊', 1,    1,             'day',  1,   null),
     ('Tony',  5, 'Handstand balance and kickups', '🤸', 2,    2,             'day',  1,   null),
-    ('Tony',  6, 'Crow pose and pike lifts',      '🐦', 2,    2,             'day',  1,   null),
+    ('Tony',  6, 'Pike lifts and shoulder stretching', '🙆', 2,    2,             'day',  1,   null),
     ('Tony',  7, 'Splits training',               '🦵', 1,    null::integer, 'day',  1,   null),
     ('Tony',  8, 'One-arm pushup practice',       '💪', 3,    3,             'day',  1,   null),
     ('Tony',  9, 'Meditation',                    '🧘', 1,    null,          'day',  1,   null),
